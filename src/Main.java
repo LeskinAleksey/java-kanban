@@ -1,14 +1,20 @@
+import interfaces.TaskManager;
+import model.Epic;
+import model.Subtask;
+import model.Task;
+import services.Managers;
+
 public class Main {
 
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();
         for (int i = 1; i <= 10; i++) {
-            Task currTask = new Task("Task" + i, "TaskDesc" + i);
+            Task currTask = new Task("model.Task" + i, "TaskDesc" + i);
             manager.createTask(currTask);
         }
 
         for (int i = 11; i <= 16; i++) {
-            Epic currEpic = new Epic("Epic" + i, "EpicDesc" + i);
+            Epic currEpic = new Epic("model.Epic" + i, "EpicDesc" + i);
             manager.createEpic(currEpic);
         }
 

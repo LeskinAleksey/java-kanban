@@ -1,7 +1,10 @@
+import interfaces.TaskManager;
+import model.Task;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import services.Managers;
 
 class TaskTest {
     static TaskManager manager;
