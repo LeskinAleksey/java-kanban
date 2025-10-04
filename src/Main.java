@@ -27,8 +27,12 @@ public class Main {
             manager.getTask(i);
         }
 
-        for (int i = 11; i < 16; i++) {
+        for (int i = 11; i < 17; i++) {
             manager.getEpic(i);
+        }
+
+        for (int i = 17; i <= 22; i++) {
+            manager.getSubtask(i);
         }
 
         printAllTasks(manager);
@@ -51,7 +55,6 @@ public class Main {
         for (Task subtask : manager.getSubtasksList()) {
             System.out.println(subtask);
         }
-
         System.out.println("История:");
         for (Task task : manager.getHistory()) {
             System.out.println(task);
