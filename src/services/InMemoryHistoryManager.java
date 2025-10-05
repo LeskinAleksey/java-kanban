@@ -29,8 +29,10 @@ public class InMemoryHistoryManager implements HistoryManager {
 
             removeNode(currNode);
         }
-        tail.next = newNode;
-        newNode.prev = tail;
+        if (!viewHistory.isEmpty()) {
+            tail.next = newNode;
+            newNode.prev = tail;
+        }
         tail = newNode;
         viewHistory.put(taskId, newNode);
     }
