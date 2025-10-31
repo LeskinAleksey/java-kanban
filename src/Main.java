@@ -2,43 +2,45 @@ import interfaces.TaskManager;
 import model.Epic;
 import model.Subtask;
 import model.Task;
+import services.FileBackedTaskManager;
 import services.Managers;
 
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager manager = Managers.getDefault();
+        TaskManager manager = Managers.getDefaultTaskManager();
+        FileBackedTaskManager fileManager = Managers.getDefaultFileManager();
         for (int i = 1; i <= 10; i++) {
             Task currTask = new Task("model.Task" + i, "TaskDesc" + i);
-            manager.createTask(currTask);
+            fileManager.createTask(currTask);
         }
 
         for (int i = 11; i <= 16; i++) {
             Epic currEpic = new Epic("model.Epic" + i, "EpicDesc" + i);
-            manager.createEpic(currEpic);
+            fileManager.createEpic(currEpic);
         }
 
         for (int i = 11; i <= 16; i++) {
             Subtask currSubTask = new Subtask("SubTask" + i, "SubTaskDesc" + i, i);
-            manager.createSubtask(currSubTask);
+            fileManager.createSubtask(currSubTask);
         }
 
         for (int i = 1; i < 11; i++) {
-            manager.getTask(i);
+            fileManager.getTask(i);
         }
 
         for (int i = 11; i < 17; i++) {
-            manager.getEpic(i);
+            fileManager.getEpic(i);
         }
 
         for (int i = 17; i <= 22; i++) {
-            manager.getSubtask(i);
+            fileManager.getSubtask(i);
         }
 
-        printAllTasks(manager);
+        printAllTasks(fileManager);
     }
 
-    private static void printAllTasks(TaskManager manager) {
+    private static void printAllTasks(FileBackedTaskManager manager) {
         System.out.println("Задачи:");
         for (Task task : manager.getTasksList()) {
             System.out.println(task);
