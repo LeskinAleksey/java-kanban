@@ -1,8 +1,11 @@
 package model;
 
 import enums.Status;
+import enums.TaskType;
 
 import java.util.Objects;
+
+import static enums.TaskType.TASK;
 
 public class Task {
     private String name;
@@ -13,6 +16,10 @@ public class Task {
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
+    }
+
+    public TaskType getType() {
+        return TASK;
     }
 
     public String getName() {
