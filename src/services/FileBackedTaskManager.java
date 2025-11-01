@@ -2,6 +2,8 @@ package services;
 
 import enums.Status;
 import enums.TaskType;
+import exceptions.ManagerLoadFromFileException;
+import exceptions.ManagerSaveException;
 import model.Epic;
 import model.Subtask;
 import model.Task;
@@ -17,6 +19,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static enums.TaskType.SUBTASK;
+import static enums.TaskType.TASK;
+
 public class FileBackedTaskManager extends InMemoryTaskManager {
     public File file;
 
@@ -25,20 +30,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public String toString(Task task) {
-        String taskClass = task.getClass().getSimpleName();
-        TaskType type;
+        TaskType type = task.getType();
         String epicId = " ";
-        switch (taskClass) {
-            case "Task":
-                type = TaskType.TASK;
-                break;
-            case "Subtask":
-                type = TaskType.SUBTASK;
-                epicId = String.valueOf(((Subtask) task).getEpicId());
-                break;
-            default:
-                type = TaskType.EPIC;
+        if (type == SUBTASK) {
+            epicId = String.valueOf(((Subtask) task).getEpicId());
         }
+
         return task.getId() + "," + type + "," + task.getName() + "," + task.getStatus() + "," + task.getDescription() + "," + epicId;
     }
 
@@ -102,7 +99,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.write(historyIds.toString());
             }
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка сохранения в файл: " + file, e);
+            throw new ManagerSaveException("Ошибка сохранения в файл: " + file);
         }
     }
 
@@ -121,12 +118,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             while (i < lines.size() && !lines.get(i).trim().isEmpty()) {
                 Task task = manager.fromString(lines.get(i));
 
-                if (task instanceof Epic) {
-                    manager.epics.put(task.getId(), (Epic) task);
-                } else if (task instanceof Subtask) {
-                    manager.subTasks.put(task.getId(), (Subtask) task);
-                } else {
-                    manager.tasks.put(task.getId(), task);
+                switch (task.getType()) {
+                    case TASK:
+                        manager.tasks.put(task.getId(), task);
+                        break;
+                    case SUBTASK:
+                        manager.subTasks.put(task.getId(), (Subtask) task);
+                        break;
+                    case EPIC:
+                        manager.epics.put(task.getId(), (Epic) task);
+                        break;
                 }
 
                 if (task.getId() > manager.taskId) {
@@ -141,7 +142,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
 
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка загрузки из файла: " + file.getPath(), e);
+            throw new ManagerLoadFromFileException("Ошибка загрузки из файла: " + file.getPath());
         }
 
         return manager;
