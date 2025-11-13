@@ -10,10 +10,10 @@ import model.Task;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, Subtask> subTasks = new HashMap<>();
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private int taskId = 0;
+    final HashMap<Integer, Task> tasks = new HashMap<>();
+    final HashMap<Integer, Subtask> subTasks = new HashMap<>();
+    final HashMap<Integer, Epic> epics = new HashMap<>();
+    int taskId = 0;
     private HistoryManager viewHistory = Managers.getDefaultHistory();
 
     @Override
@@ -168,12 +168,12 @@ public class InMemoryTaskManager implements TaskManager {
         return viewHistory.getHistory();
     }
 
-    private void updateEpicStatus(int epicId) {
+    void updateEpicStatus(int epicId) {
         ArrayList<Subtask> epicSubTasks = getEpicSubtasks(epicId);
 
         Epic epic = epics.get(epicId);
 
-        if (epicSubTasks.size() == 0) {
+        if (epicSubTasks.isEmpty()) {
             epic.setStatus(Status.NEW);
             return;
         }

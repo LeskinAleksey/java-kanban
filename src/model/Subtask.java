@@ -1,5 +1,9 @@
 package model;
 
+import enums.TaskType;
+
+import static enums.TaskType.SUBTASK;
+
 public class Subtask extends Task {
     private int epicId;
 
@@ -14,6 +18,11 @@ public class Subtask extends Task {
 
     public void setEpicId(int epicId) {
         this.epicId = epicId;
+    }
+
+    @Override
+    public TaskType getType() {
+        return SUBTASK;
     }
 
     @Override

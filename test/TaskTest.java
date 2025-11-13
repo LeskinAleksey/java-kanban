@@ -11,7 +11,7 @@ class TaskTest {
 
     @BeforeAll
     static void init() {
-        manager = Managers.getDefault();
+        manager = Managers.getDefaultTaskManager();
     }
 
     @AfterEach
