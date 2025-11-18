@@ -5,23 +5,28 @@ import model.Task;
 import services.FileBackedTaskManager;
 import services.Managers;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Main {
 
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefaultTaskManager();
         FileBackedTaskManager fileManager = Managers.getDefaultFileManager();
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        Duration threeHoursDuration = Duration.ofMinutes(180L);
         for (int i = 1; i <= 10; i++) {
-            Task currTask = new Task("model.Task" + i, "TaskDesc" + i);
+            Task currTask = new Task("model.Task" + i, "TaskDesc" + i, threeHoursDuration, currentDateTime);
             fileManager.createTask(currTask);
         }
 
         for (int i = 11; i <= 16; i++) {
-            Epic currEpic = new Epic("model.Epic" + i, "EpicDesc" + i);
+            Epic currEpic = new Epic("model.Epic" + i, "EpicDesc" + i, threeHoursDuration, currentDateTime);
             fileManager.createEpic(currEpic);
         }
 
         for (int i = 11; i <= 16; i++) {
-            Subtask currSubTask = new Subtask("SubTask" + i, "SubTaskDesc" + i, i);
+            Subtask currSubTask = new Subtask("SubTask" + i, "SubTaskDesc" + i, i, threeHoursDuration, currentDateTime);
             fileManager.createSubtask(currSubTask);
         }
 

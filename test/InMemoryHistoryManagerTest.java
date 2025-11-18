@@ -8,8 +8,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import services.Managers;
 
-public class InMemoryHistoryManagerTest {
+import java.time.Duration;
+import java.time.LocalDateTime;
+
+public class InMemoryHistoryManagerTest extends BaseTest {
     static TaskManager manager;
+    private LocalDateTime currentDateTime = LocalDateTime.now();
+    private Duration threeHoursDuration = Duration.ofMinutes(180L);
 
     @BeforeAll
     static void init() {
@@ -25,7 +30,7 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     void createViewHistoryEntryAfterTaskViewTest() {
-        Task task = new Task("Task1", "Description1");
+        Task task = new Task("Task1", "Description1", getDuration(), getStartTime(0));
         manager.createTask(task);
         manager.getTask(1);
         Assertions.assertEquals(1, manager.getHistory().size());
@@ -34,7 +39,7 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     void createViewHistoryEntryAfterEpicViewTest() {
-        Epic epic = new Epic("Epic1", "Description1");
+        Epic epic = new Epic("Epic1", "Description1", getDuration(), getStartTime(1));
         manager.createEpic(epic);
         manager.getEpic(1);
         Assertions.assertEquals(1, manager.getHistory().size());
@@ -43,9 +48,9 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     void createViewHistoryEntryAfterSubtaskViewTest() {
-        Epic epic = new Epic("Epic1", "Description1");
+        Epic epic = new Epic("Epic1", "Description1", getDuration(), getStartTime(2));
         manager.createEpic(epic);
-        Subtask subtask = new Subtask("subtask1", "Description1", epic.getId());
+        Subtask subtask = new Subtask("subtask1", "Description1", epic.getId(), getDuration(), getStartTime(3));
         manager.createSubtask(subtask);
         manager.getSubtask(2);
         Assertions.assertEquals(2, manager.getHistory().getLast().getId());
