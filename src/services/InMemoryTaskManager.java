@@ -25,9 +25,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected final TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
     public List<Task> getPrioritizedTasks() {
-        return prioritizedTasks.stream()
-                .filter(task -> task.getStartTime() != null)
-                .collect(Collectors.toList());
+        return new ArrayList<>(prioritizedTasks);
     }
 
     private boolean isTasksIntersect(Task task1, Task task2) {
