@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -30,39 +33,64 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public String toString(Task task) {
-        TaskType type = task.getType();
-        String epicId = " ";
-        if (type == SUBTASK) {
-            epicId = String.valueOf(((Subtask) task).getEpicId());
+        StringBuilder sb = new StringBuilder();
+        sb.append(task.getId()).append(",")
+                .append(task.getType()).append(",")
+                .append(task.getName()).append(",")
+                .append(task.getStatus()).append(",")
+                .append(task.getDescription());
+
+        if (task.getType() == SUBTASK) {
+            sb.append(",").append(((Subtask) task).getEpicId());
+        } else {
+            sb.append(",");
         }
 
-        return task.getId() + "," + type + "," + task.getName() + "," + task.getStatus() + "," + task.getDescription() + "," + epicId;
+        if (task.getDuration() != null) {
+            sb.append(",").append(task.getDuration().toMinutes());
+        } else {
+            sb.append(",");
+        }
+
+        if (task.getStartTime() != null) {
+            sb.append(",").append(task.getStartTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+        } else {
+            sb.append(",");
+        }
+
+        return sb.toString();
     }
 
     public Task fromString(String value) {
-        String[] parts = value.split(",");
-        int id = Integer.parseInt(parts[0]);
-        TaskType type = TaskType.valueOf(parts[1]);
-        String name = parts[2];
-        Status status = Status.valueOf(parts[3]);
-        String description = parts[4];
-        String epicId = parts[5];
+        String[] fields = value.split(",");
+        int id = Integer.parseInt(fields[0]);
+        TaskType type = TaskType.valueOf(fields[1]);
+        String name = fields[2];
+        Status status = Status.valueOf(fields[3]);
+        String description = fields[4];
+        Duration durationMinutes = Duration.ofMinutes(Long.parseLong(fields[6]));
+        LocalDateTime startTime = LocalDateTime.parse(fields[7], DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
+
         Task task;
+
         switch (type) {
             case TASK:
-                task = new Task(name, description);
-                break;
-            case SUBTASK:
-                task = new Subtask(name, description, Integer.parseInt(epicId));
+                task = new Task(name, description, durationMinutes, startTime);
                 break;
             case EPIC:
-                task = new Epic(name, description);
+                task = new Epic(name, description, durationMinutes, startTime);
+                break;
+            case SUBTASK:
+                int epicId = Integer.parseInt(fields[5]);
+                task = new Subtask(name, description, epicId, durationMinutes, startTime);
                 break;
             default:
                 throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
         }
+
         task.setId(id);
         task.setStatus(status);
+
         return task;
     }
 

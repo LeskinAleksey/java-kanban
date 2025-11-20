@@ -6,8 +6,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import services.Managers;
 
-class TaskTest {
+import java.time.Duration;
+import java.time.LocalDateTime;
+
+class TaskTest extends BaseTest {
     static TaskManager manager;
+    private LocalDateTime currentDateTime = LocalDateTime.now();
+    private Duration threeHoursDuration = Duration.ofMinutes(180L);
 
     @BeforeAll
     static void init() {
@@ -21,16 +26,16 @@ class TaskTest {
 
     @Test
     void tasksWithSameIdIsEqual() {
-        Task task = new Task("Task1", "Description1");
+        Task task = new Task("Task1", "Description1", getDuration(), getStartTime(0));
         manager.createTask(task);
         Assertions.assertEquals(manager.getTask(1), manager.getTask(1));
     }
 
     @Test
     void changeTaskNameAndDescription() {
-        Task task = new Task("Task1", "Description1");
+        Task task = new Task("Task1", "Description1", getDuration(), getStartTime(1));
         manager.createTask(task);
-        Task changedTask = new Task("New name", "New description");
+        Task changedTask = new Task("New name", "New description", getDuration(), getStartTime(2));
         manager.changeTask(changedTask, task.getId());
         Assertions.assertEquals(changedTask.getName(), manager.getTask(task.getId()).getName());
         Assertions.assertEquals(changedTask.getDescription(), manager.getTask(task.getId()).getDescription());
@@ -38,18 +43,18 @@ class TaskTest {
 
     @Test
     void addTasks() {
-        Task task = new Task("Task1", "Description1");
+        Task task = new Task("Task1", "Description1", getDuration(), getStartTime(3));
         manager.createTask(task);
-        Task task2 = new Task("Task2", "Description2");
+        Task task2 = new Task("Task2", "Description2", getDuration(), getStartTime(4));
         manager.createTask(task2);
         Assertions.assertEquals(2, manager.getTasksList().size());
     }
 
     @Test
     void deleteTasks() {
-        Task task = new Task("Task1", "Description1");
+        Task task = new Task("Task1", "Description1", getDuration(), getStartTime(5));
         manager.createTask(task);
-        Task task2 = new Task("Task2", "Description2");
+        Task task2 = new Task("Task2", "Description2", getDuration(), getStartTime(6));
         manager.createTask(task2);
         manager.deleteAllTasks();
         Assertions.assertEquals(0, manager.getTasksList().size());
@@ -57,7 +62,7 @@ class TaskTest {
 
     @Test
     void deleteTask() {
-        Task task = new Task("Task1", "Description1");
+        Task task = new Task("Task1", "Description1", getDuration(), getStartTime(7));
         manager.createTask(task);
         manager.deleteTask(task.getId());
         Assertions.assertTrue(manager.getTasksList().isEmpty());
