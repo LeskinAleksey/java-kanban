@@ -15,6 +15,9 @@ public class InMemoryHistoryManager implements HistoryManager {
     private final Map<Integer, Node> viewHistory = new HashMap<>();
 
     private void linkLast(Task task) {
+        if (task == null) {
+            return;
+        }
         int taskId = task.getId();
         Node newNode = new Node<>(task);
         if (viewHistory.isEmpty()) {

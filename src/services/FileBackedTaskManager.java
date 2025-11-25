@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static enums.TaskType.SUBTASK;
-import static enums.TaskType.TASK;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     public File file;
@@ -195,9 +194,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void createTask(Task task) {
+    public Task createTask(Task task) {
         super.createTask(task);
         save();
+        return task;
     }
 
     @Override
@@ -213,9 +213,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void changeTask(Task task, int taskId) {
+    public boolean changeTask(Task task, int taskId) {
         super.changeTask(task, taskId);
         save();
+        return false;
     }
 
     @Override
@@ -231,9 +232,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void deleteTask(int taskId) {
+    public boolean deleteTask(int taskId) {
         super.deleteTask(taskId);
         save();
+        return false;
     }
 
     @Override
