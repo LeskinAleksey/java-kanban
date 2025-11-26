@@ -20,26 +20,31 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
+
         Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
 
-        switch (endpoint) {
-            case GET_SUBTASKS:
-                handleGetSubtasks(exchange);
-                break;
-            case GET_SUBTASK:
-                handleGetSubtask(exchange);
-                break;
-            case GET_SUBTASKS_BY_EPIC:
-                handleGetSubtasksByEpic(exchange);
-                break;
-            case POST_SUBTASK:
-                handlePostSubtask(exchange);
-                break;
-            case DELETE_SUBTASK:
-                handleDeleteSubtask(exchange);
-                break;
-            default:
-                sendNotFound(exchange);
+        try {
+            switch (endpoint) {
+                case GET_SUBTASKS:
+                    handleGetSubtasks(exchange);
+                    break;
+                case GET_SUBTASK:
+                    handleGetSubtask(exchange);
+                    break;
+                case GET_SUBTASKS_BY_EPIC:
+                    handleGetSubtasksByEpic(exchange);
+                    break;
+                case POST_SUBTASK:
+                    handlePostSubtask(exchange);
+                    break;
+                case DELETE_SUBTASK:
+                    handleDeleteSubtask(exchange);
+                    break;
+                default:
+                    sendNotFound(exchange);
+            }
+        } catch (Exception e) {
+            sendInternalServerError(exchange);
         }
     }
 

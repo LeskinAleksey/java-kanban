@@ -23,24 +23,28 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
 
-        switch (endpoint) {
-            case GET_EPICS:
-                handleGetEpics(exchange);
-                break;
-            case GET_EPIC:
-                handleGetEpic(exchange);
-                break;
-            case GET_EPIC_SUBTASKS:
-                handleGetEpicSubtasks(exchange);
-                break;
-            case POST_EPIC:
-                handlePostEpic(exchange);
-                break;
-            case DELETE_EPIC:
-                handleDeleteEpic(exchange);
-                break;
-            default:
-                sendNotFound(exchange);
+        try {
+            switch (endpoint) {
+                case GET_EPICS:
+                    handleGetEpics(exchange);
+                    break;
+                case GET_EPIC:
+                    handleGetEpic(exchange);
+                    break;
+                case GET_EPIC_SUBTASKS:
+                    handleGetEpicSubtasks(exchange);
+                    break;
+                case POST_EPIC:
+                    handlePostEpic(exchange);
+                    break;
+                case DELETE_EPIC:
+                    handleDeleteEpic(exchange);
+                    break;
+                default:
+                    sendNotFound(exchange);
+            }
+        } catch (Exception e) {
+            sendInternalServerError(exchange);
         }
     }
 

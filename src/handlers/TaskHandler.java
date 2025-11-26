@@ -20,31 +20,29 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
 
-        Endpoint endpoint;
+        Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
 
         try {
-            endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
+            switch (endpoint) {
+                case GET_TASKS:
+                    handleGetTasks(exchange);
+                    break;
+                case GET_TASK:
+                    handleGetTask(exchange);
+                    break;
+                case POST_TASK:
+                    handlePostTask(exchange);
+                    break;
+                case DELETE_TASK:
+                    handleDeleteTask(exchange);
+                    break;
+                default:
+                    sendNotFound(exchange);
+            }
         } catch (Exception e) {
             sendInternalServerError(exchange);
-            return;
         }
 
-        switch (endpoint) {
-            case GET_TASKS:
-                handleGetTasks(exchange);
-                break;
-            case GET_TASK:
-                handleGetTask(exchange);
-                break;
-            case POST_TASK:
-                handlePostTask(exchange);
-                break;
-            case DELETE_TASK:
-                handleDeleteTask(exchange);
-                break;
-            default:
-                sendNotFound(exchange);
-        }
     }
 
     private void handleGetTasks(HttpExchange exchange) throws IOException {
