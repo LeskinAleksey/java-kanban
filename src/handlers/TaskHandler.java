@@ -1,12 +1,10 @@
 package handlers;
 
-import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import enums.Endpoint;
 import interfaces.TaskManager;
 import model.Task;
-import util.GsonProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,17 +12,22 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 public class TaskHandler extends BaseHttpHandler implements HttpHandler {
-    private final TaskManager manager;
-    private final Gson gson;
 
     public TaskHandler(TaskManager manager) {
-        this.manager = manager;
-        this.gson = GsonProvider.getGson();
+        super(manager);
     }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
+
+        Endpoint endpoint;
+
+        try {
+            endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
+        } catch (Exception e) {
+            sendInternalServerError(exchange);
+            return;
+        }
 
         switch (endpoint) {
             case GET_TASKS:
@@ -86,9 +89,6 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
             }
         } catch (IllegalArgumentException e) {
             sendHasOverlaps(exchange);
-        } catch (Exception e) {
-            e.printStackTrace();
-            sendNotFound(exchange);
         }
     }
 
