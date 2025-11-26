@@ -24,6 +24,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     protected final TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
+    @Override
     public List<Task> getPrioritizedTasks() {
         return new ArrayList<>(prioritizedTasks);
     }
@@ -129,7 +130,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void createTask(Task task) {
+    public Task createTask(Task task) {
         if (isTaskIntersectWithAny(task)) {
             throw new IllegalArgumentException("Задача пересекается по времени с существующими задачами");
         }
@@ -141,6 +142,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (task.getStartTime() != null) {
             prioritizedTasks.add(task);
         }
+        return task;
     }
 
     @Override
@@ -168,7 +170,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void changeTask(Task task, int taskId) {
+    public boolean changeTask(Task task, int taskId) {
+        if (!tasks.containsKey(taskId)) {
+            return false;
+        }
+
         task.setId(taskId);
         if (isTaskIntersectWithAny(task)) {
             throw new IllegalArgumentException("Задача пересекается по времени с существующими задачами");
@@ -182,6 +188,8 @@ public class InMemoryTaskManager implements TaskManager {
         if (task.getStartTime() != null) {
             prioritizedTasks.add(task);
         }
+
+        return true;
     }
 
     @Override
@@ -213,9 +221,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteTask(int taskId) {
+    public boolean deleteTask(int taskId) {
         tasks.remove(taskId);
         viewHistory.remove(taskId);
+        return true;
     }
 
     @Override
